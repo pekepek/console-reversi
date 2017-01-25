@@ -11,4 +11,4 @@ require "console_reversi"
 # Pry.start
 
 require "irb"
-IRB.start
+ConsoleReversi.game_start
