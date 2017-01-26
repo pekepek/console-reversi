@@ -6,6 +6,9 @@ class Board
   end
 
   def pretty_print
+    print "\e[2J"
+    print "\e[1;1H"
+
     @board.each_with_index do |row, i|
       row.each_with_index do |p, j|
         if p == 0
@@ -17,6 +20,10 @@ class Board
 
       print "\e[0m\n"
     end
+  end
+
+  def put_piece!(piece:, x:, y:)
+    @board[y][x] = piece
   end
 
   private
