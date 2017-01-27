@@ -1,7 +1,9 @@
 require 'console_reversi/version'
 require 'console_reversi/board'
+require 'console_reversi/searcher'
 require 'console_reversi/piece'
 require 'console_reversi/player'
+require 'pry'
 
 class ConsoleReversi
   def initialize
@@ -20,9 +22,11 @@ class ConsoleReversi
       move_cursor do |key|
         if type_enter?(key)
           position = cursor_position
+          board_position = {x: position[:x] / 2, y: position[:y] - 1}
 
-          now_player(turn_number).put_piece_on!(@board, x: position[:x] / 2, y: position[:y] - 1)
+          next if Searcher::DIRECTIONS.none? {|d| @board.turnable?(direction: d, piece_color: now_player(turn_number).piece_color, x: board_position[:x], y: board_position[:y]) }
 
+          now_player(turn_number).put_piece_on!(@board, x: board_position[:x], y: board_position[:y])
           @board.pretty_print
           # NOTE back a cursor
           print "\e[#{position[:y]};#{position[:x]}H"
@@ -43,8 +47,6 @@ class ConsoleReversi
 
   def game_finish?
     # TODO ゲーム終了条件
-    # NOTE 一時的に ctrl c で中断できるようにしてる
-    STDIN.getch == "\C-c"
   end
 
   def now_player(turn_number)
@@ -53,6 +55,9 @@ class ConsoleReversi
 
   def move_cursor(&block)
     while key = STDIN.getch
+      # NOTE 一時的に ctrl c で中断できるようにしてる
+      exit if key == "\C-c"
+
       if key == "\e" && STDIN.getch == "["
         key = STDIN.getch
 

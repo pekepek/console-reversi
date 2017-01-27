@@ -1,6 +1,8 @@
 require_relative 'piece'
 
 class Player
+  attr_accessor :piece_color
+
   def initialize(piece_color:)
     @piece_color = piece_color.to_sym
   end
