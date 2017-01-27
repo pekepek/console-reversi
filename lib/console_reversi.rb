@@ -14,7 +14,6 @@ class ConsoleReversi
 
   def game_start
     @board.pretty_print
-    # TODO 初期ボードを表示
 
     loop.with_index do |_, turn_number|
       # TODO 石が置けない場合 pass
@@ -24,18 +23,19 @@ class ConsoleReversi
           position = cursor_position
           board_position = {x: position[:x] / 2, y: position[:y] - 1}
 
-          next if Searcher::DIRECTIONS.none? {|d| @board.turnable?(direction: d, piece_color: now_player(turn_number).piece_color, x: board_position[:x], y: board_position[:y]) }
+          next if Searcher::DIRECTIONS.none? {|d| @board.putable_piece?(direction: d, piece_color: now_player(turn_number).piece_color, x: board_position[:x], y: board_position[:y]) }
 
           now_player(turn_number).put_piece_on!(@board, x: board_position[:x], y: board_position[:y])
+          now_player(turn_number).turn_pieces!(@board, x: board_position[:x], y: board_position[:y])
+
           @board.pretty_print
+
           # NOTE back a cursor
           print "\e[#{position[:y]};#{position[:x]}H"
 
           break
         end
       end
-
-      # TODO 石がひっくり返る
 
       break if game_finish?
     end

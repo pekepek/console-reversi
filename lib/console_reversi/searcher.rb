@@ -10,7 +10,7 @@ class Searcher
   def search(direction, distance)
     pos = position(direction, distance)
 
-    @board.at(pos[:y])&.at(pos[:x])
+    @board.at(pos[:y])&.at(pos[:x]) if !pos[:y].negative? && !pos[:x].negative?
   end
 
   def position(direction, distance)

@@ -7,14 +7,16 @@ class Board
   end
 
   def put_piece!(piece:, x:, y:)
-    turn_pieces!(x, y, piece.type)
-
     @board[y][x] = piece
   end
 
-  def turnable?(direction:, piece_color:, x:, y:)
-    return false unless board_at(x, y) == 0
+  def putable_piece?(direction:, piece_color:, x:, y:)
+    return false unless at(x, y) == 0
 
+    have_turnable_piece?(direction: direction, piece_color: piece_color, x: x, y: y)
+  end
+
+  def have_turnable_piece?(direction:, piece_color:, x:, y:)
     searcher = create_searcher(x, y)
 
     p = searcher.search(direction, 1)
@@ -48,6 +50,10 @@ class Board
     end
   end
 
+  def at(x, y)
+    @board.at(y)&.at(x)
+  end
+
   private
 
   def initialize_board
@@ -61,28 +67,7 @@ class Board
     board
   end
 
-  def turn_pieces!(base_piece_x, base_piece_y, base_piece_type)
-    searcher = create_searcher(base_piece_x, base_piece_y)
-
-    Searcher::DIRECTIONS.each do |direction|
-      next unless turnable?(direction: direction, piece_color: base_piece_type, x: base_piece_x, y: base_piece_y)
-
-      loop.with_index(1) do |_, distance|
-        pos = searcher.position(direction, distance)
-        piece = board_at(pos[:x], pos[:y])
-
-        break if piece.send("#{base_piece_type}?")
-
-        @board[pos[:y]][pos[:x]] = Piece.new(type: base_piece_type)
-      end
-    end
-  end
-
   def create_searcher(x, y)
     Searcher.new(@board, x, y)
-  end
-
-  def board_at(x, y)
-    @board.at(y)&.at(x)
   end
 end
