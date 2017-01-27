@@ -3,6 +3,7 @@ require 'console_reversi/board'
 require 'console_reversi/searcher'
 require 'console_reversi/piece'
 require 'console_reversi/player'
+require 'console_reversi/ascii_art'
 require 'pry'
 
 class ConsoleReversi
@@ -16,7 +17,16 @@ class ConsoleReversi
     @board.pretty_print
 
     loop.with_index do |_, turn_number|
-      # TODO 石が置けない場合 pass
+      unless now_player(turn_number).putable_piece?(@board)
+        print print "\e[2;1H"
+        print AsciiArt::PASS
+
+        sleep 1
+
+        @board.pretty_print
+
+        next
+      end
 
       move_cursor do |key|
         if type_enter?(key)

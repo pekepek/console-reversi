@@ -11,6 +11,14 @@ class Player
     board.put_piece!(piece: Piece.new(type: @piece_color), x: x, y: y)
   end
 
+  def putable_piece?(board)
+    8.times.any? {|i|
+      8.times.any? {|j|
+        Searcher::DIRECTIONS.any? {|d| board.putable_piece?(direction: d, piece_color: @piece_color, x: i, y: j) }
+      }
+    }
+  end
+
   def turn_pieces!(board, x:, y:)
     searcher = Searcher.new(board, x, y)
 
