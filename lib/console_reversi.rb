@@ -24,6 +24,7 @@ class ConsoleReversi
         sleep 1
 
         @board.pretty_print
+        print print "\e[1;1H"
 
         next
       end
