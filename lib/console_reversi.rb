@@ -18,15 +18,13 @@ class ConsoleReversi
 
     loop.with_index do |_, turn_number|
       unless now_player(turn_number).putable_piece?(@board)
-        print print "\e[2;1H"
-        print AsciiArt::PASS
+        if next_player(turn_number).putable_piece?(@board)
+          print_pass
 
-        sleep 1
-
-        @board.pretty_print
-        print print "\e[1;1H"
-
-        next
+          next
+        else
+          break
+        end
       end
 
       move_cursor do |key|
@@ -47,21 +45,21 @@ class ConsoleReversi
           break
         end
       end
-
-      break if game_finish?
     end
 
-    # TODO 勝者判定
+    print_result
+
+    print "\e[8;1H"
   end
 
   private
 
-  def game_finish?
-    # TODO ゲーム終了条件
-  end
-
   def now_player(turn_number)
     turn_number.even? ? @black_player : @white_player
+  end
+
+  def next_player(turn_number)
+    now_player(turn_number) == @black_player ? @white_player : @black_player
   end
 
   def move_cursor(&block)
@@ -108,5 +106,52 @@ class ConsoleReversi
 
   def type_enter?(key)
     key == "\r"
+  end
+
+  def print_pass
+    print "\e[2;1H"
+    print AsciiArt::PASS
+
+    sleep 1
+
+    @board.pretty_print
+    print "\e[1;1H"
+  end
+
+  def print_result
+    print "\e[2;1H"
+    print AsciiArt::FINISH
+
+    sleep 1
+
+    @board.pretty_print
+
+    print "\e[1;1H"
+
+    black_count = @board.count_pieces(color: :black)
+    white_count = @board.count_pieces(color: :white)
+
+    print ConsoleReversi::AsciiArt.to_aa('black', black_count, margin: 20)
+
+    sleep 1
+
+    print "\n"
+    print ConsoleReversi::AsciiArt.to_aa('white', white_count, margin: 20)
+
+    sleep 1
+
+    @board.pretty_print
+
+    result =
+      if black_count > white_count
+        ['black', 'win']
+      elsif black_count == white_count
+        ['draw']
+      else
+        ['white', 'win']
+      end
+
+    print "\e[2;1H"
+    print ConsoleReversi::AsciiArt.to_aa(*result, margin: 20)
   end
 end

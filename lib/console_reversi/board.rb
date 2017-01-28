@@ -31,6 +31,10 @@ class ConsoleReversi
       false
     end
 
+    def count_pieces(color:)
+      @board.map {|col| col.count {|p| p != 0 && p.send("#{color}?") } }.inject(:+)
+    end
+
     def pretty_print
       print "\e[2J"
       print "\e[1;1H"
