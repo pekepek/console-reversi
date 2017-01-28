@@ -41,8 +41,10 @@ class ConsoleReversi
 
       @board.each_with_index do |row, i|
         row.each_with_index do |p, j|
+          print (i + j) % 2 == 0 ? "\e[46m" : "\e[47m"
+
           if p == 0
-            print (i + j) % 2 == 0 ? "\e[48;5;22m　" : "\e[48;5;232m　"
+            print '　'
           else
             p.pretty_print
           end

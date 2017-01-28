@@ -1,6 +1,6 @@
 class ConsoleReversi
   class Piece
-    COLORS = {black: "\e[37;40m", white: "\e[30;47m"}
+    COLORS = {black: "\e[30m", white: "\e[37m"}
 
     attr_accessor :type
 
@@ -9,7 +9,7 @@ class ConsoleReversi
     end
 
     def pretty_print
-      print "#{COLORS[@type.to_sym]} ⃝ "
+      print "#{COLORS[@type.to_sym]}⬤️⃝ "
     end
 
     def black?
