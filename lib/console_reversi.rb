@@ -63,7 +63,7 @@ class ConsoleReversi
 
   def move_cursor(&block)
     while key = STDIN.getch
-      # NOTE 一時的に ctrl c で中断できるようにしてる
+      # NOTE enable to cancel a game by ctrl-c
       exit if key == "\C-c"
 
       if key == "\e" && STDIN.getch == "["
