@@ -2,22 +2,22 @@ class ConsoleReversi
   class Piece
     COLORS = {black: "\e[30m", white: "\e[37m"}
 
-    attr_accessor :type
+    attr_accessor :color
 
-    def initialize(type:)
-      @type = type
+    def initialize(color:)
+      @color = color
     end
 
     def pretty_print
-      print "#{COLORS[@type.to_sym]}⬤️⃝ "
+      print "#{COLORS[@color.to_sym]}⬤️⃝ "
     end
 
     def black?
-      @type == :black
+      @color == :black
     end
 
     def white?
-      @type == :white
+      @color == :white
     end
   end
 end

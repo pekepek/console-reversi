@@ -63,10 +63,10 @@ class ConsoleReversi
     def initialize_board
       board = 8.times.map { [0].cycle(8).to_a }
 
-      board[3][3] = Piece.new(type: :black)
-      board[3][4] = Piece.new(type: :white)
-      board[4][3] = Piece.new(type: :white)
-      board[4][4] = Piece.new(type: :black)
+      board[3][3] = Piece.new(color: :black)
+      board[3][4] = Piece.new(color: :white)
+      board[4][3] = Piece.new(color: :white)
+      board[4][4] = Piece.new(color: :black)
 
       board
     end
