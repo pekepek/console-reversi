@@ -4,7 +4,6 @@ require 'console_reversi/searcher'
 require 'console_reversi/piece'
 require 'console_reversi/player'
 require 'console_reversi/ascii_art'
-require 'pry'
 
 class ConsoleReversi
   def initialize
