@@ -24,6 +24,16 @@ Or install it yourself as:
 $ console-reversi
 ```
 
+You can select a human player or computer player
+
+```
+Choose black player's type (Use arrow keys, press Enter to select)
+‣ human
+  computer
+```
+
+please select by using arrow keys
+
 ## Commands
 
 * move a cursor : `direction keys`
