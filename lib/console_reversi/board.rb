@@ -9,7 +9,7 @@ class ConsoleReversi
     end
 
     def putable_piece?(direction:, piece_color:, x:, y:)
-      return false unless at(x, y) == 0
+      return false unless at(x, y).is_a?(Numeric)
 
       have_turnable_piece?(direction: direction, piece_color: piece_color, x: x, y: y)
     end
@@ -18,12 +18,12 @@ class ConsoleReversi
       searcher = create_searcher(x, y)
 
       p = searcher.search(direction, 1)
-      return false if p.nil? || p == 0 || p.send("#{piece_color}?")
+      return false if !p.is_a?(Piece) || p.send("#{piece_color}?")
 
       loop.with_index(2) do |_, distance|
         p = searcher.search(direction, distance)
 
-        return false if p.nil? || p == 0
+        return false if !p.is_a?(Piece)
 
         return true if p.send("#{piece_color}?")
       end
@@ -45,6 +45,8 @@ class ConsoleReversi
 
           if p == 0
             print '　'
+          elsif p == 1
+            print "\e[37m〇"
           else
             p.pretty_print
           end
@@ -56,6 +58,22 @@ class ConsoleReversi
 
     def at(x, y)
       @board.at(y)&.at(x)
+    end
+
+    def plot_putable_point!(player)
+      8.times do |i|
+        8.times do |j|
+          @board[j][i] = 1 if Searcher::DIRECTIONS.any? {|d| putable_piece?(direction: d, piece_color: player.piece_color, x: i, y: j) }
+        end
+      end
+    end
+
+    def refresh_putable_point!
+      8.times do |i|
+        8.times do |j|
+          @board[j][i] = 0 if @board[j][i] == 1
+        end
+      end
     end
 
     private

@@ -16,6 +16,7 @@ class ConsoleReversi
   end
 
   def game_start
+    @board.plot_putable_point!(now_player(0))
     @board.pretty_print
 
     loop.with_index do |_, turn_number|
@@ -39,6 +40,8 @@ class ConsoleReversi
           now_player(turn_number).put_piece_on!(@board, x: board_position[:x], y: board_position[:y])
           now_player(turn_number).turn_pieces!(@board, x: board_position[:x], y: board_position[:y])
 
+          @board.refresh_putable_point!
+          @board.plot_putable_point!(next_player(turn_number))
           @board.pretty_print
 
           # NOTE back a cursor
@@ -51,7 +54,7 @@ class ConsoleReversi
 
     print_result
 
-    print "\e[8;1H"
+    print "\e[9;1H"
   end
 
   private
