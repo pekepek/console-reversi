@@ -9,10 +9,10 @@ require 'console_reversi/cursor_operatable'
 class ConsoleReversi
   include CursorOperatable
 
-  def initialize
+  def initialize(black_player_type, white_player_type)
     @board = Board.new
-    @black_player = Player.new(piece_color: :black)
-    @white_player = Player.new(piece_color: :white)
+    @player1 = Player.new(piece_color: :black, type: black_player_type)
+    @player2 = Player.new(piece_color: :white, type: white_player_type)
   end
 
   def game_start
@@ -30,24 +30,34 @@ class ConsoleReversi
         end
       end
 
-      move_cursor do |key|
-        if type_enter?(key)
-          position = cursor_position
-          board_position = {x: position[:x] / 2, y: position[:y] - 1}
+      if now_player(turn_number).type == :computer
+        @board.plot_putable_point!(now_player(turn_number))
+        sleep 0.5
+        now_player(turn_number).put_piece_randomly!(@board)
 
-          next if Searcher::DIRECTIONS.none? {|d| @board.putable_piece?(direction: d, piece_color: now_player(turn_number).piece_color, x: board_position[:x], y: board_position[:y]) }
+        @board.refresh_putable_point!
+        @board.plot_putable_point!(next_player(turn_number))
+        @board.pretty_print
+      else
+        move_cursor do |key|
+          if type_enter?(key)
+            position = cursor_position
+            board_position = {x: position[:x] / 2, y: position[:y] - 1}
 
-          now_player(turn_number).put_piece_on!(@board, x: board_position[:x], y: board_position[:y])
-          now_player(turn_number).turn_pieces!(@board, x: board_position[:x], y: board_position[:y])
+            next if Searcher::DIRECTIONS.none? {|d| @board.putable_piece?(direction: d, piece_color: now_player(turn_number).piece_color, x: board_position[:x], y: board_position[:y]) }
 
-          @board.refresh_putable_point!
-          @board.plot_putable_point!(next_player(turn_number))
-          @board.pretty_print
+            now_player(turn_number).put_piece_on!(@board, x: board_position[:x], y: board_position[:y])
+            now_player(turn_number).turn_pieces!(@board, x: board_position[:x], y: board_position[:y])
 
-          # NOTE back a cursor
-          print "\e[#{position[:y]};#{position[:x]}H"
+            @board.refresh_putable_point!
+            @board.plot_putable_point!(next_player(turn_number))
+            @board.pretty_print
 
-          break
+            # NOTE back a cursor
+            print "\e[#{position[:y]};#{position[:x]}H"
+
+            break
+          end
         end
       end
     end
@@ -60,11 +70,11 @@ class ConsoleReversi
   private
 
   def now_player(turn_number)
-    turn_number.even? ? @black_player : @white_player
+    turn_number.even? ? @player1 : @player2
   end
 
   def next_player(turn_number)
-    now_player(turn_number) == @black_player ? @white_player : @black_player
+    now_player(turn_number) == @player1 ? @player2 : @player1
   end
 
   def print_pass

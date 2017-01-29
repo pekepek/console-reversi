@@ -1,9 +1,12 @@
 class ConsoleReversi
   class Player
-    attr_accessor :piece_color
+    attr_accessor :piece_color, :type
 
-    def initialize(piece_color:)
+    TYPES = %i(human computer)
+
+    def initialize(piece_color:, type:)
       @piece_color = piece_color.to_sym
+      @type = type
     end
 
     def put_piece_on!(board, x:, y:)
@@ -33,6 +36,14 @@ class ConsoleReversi
           put_piece_on!(board, x: pos[:x], y: pos[:y])
         end
       end
+    end
+
+    def put_piece_randomly!(board)
+      random_position = board.putable_positions.sample
+
+      put_piece_on!(board, x: random_position[1], y: random_position[0])
+
+      turn_pieces!(board, x: random_position[1], y: random_position[0])
     end
   end
 end

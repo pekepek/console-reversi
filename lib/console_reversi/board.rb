@@ -76,6 +76,14 @@ class ConsoleReversi
       end
     end
 
+    def putable_positions
+      @board.each_with_object([]).with_index {|(col, positions), i|
+        col.each_with_index {|s, j|
+          positions << [i, j] if s == 1
+        }
+      }
+    end
+
     private
 
     def initialize_board
